@@ -19,11 +19,6 @@ class TrainingController extends Controller
 
     public function store(Request $request)
     {
-        // $request->validate([
-        //     'name' => 'required',
-        //     'duration' => 'required',
-        //     'category' => 'required',
-        // ]);
         Training::create($request->post());
         return response()->json([
             'message' => 'Training created successfully'

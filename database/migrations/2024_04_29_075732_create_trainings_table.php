@@ -15,8 +15,11 @@ return new class extends Migration
     {
         Schema::create('trainings', function (Blueprint $table) {
             $table->id();
+            //field for training name
             $table->string('name');
+            //field for training validity
             $table->string('duration');
+            //field for training category
             $table->string('category');
             $table->timestamps();
         });
