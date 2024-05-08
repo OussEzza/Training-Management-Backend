@@ -2,100 +2,71 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Auth;
 use App\Models\User;
 use Illuminate\Http\Request;
+// use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
+use Symfony\Component\HttpFoundation\Response;
+use App\Models\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
-        return 'Authenticated user';
+        return 'users !!';
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function register(Request $request)
     {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required',
-            'password' => 'required',
+        $validatedData = $request->validate([
+            'name' => 'required|string',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:6',
         ]);
 
-        return User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
+        $user = User::create([
+            'name' => $validatedData['name'],
+            'email' => $validatedData['email'],
+            'password' => HASH::make($validatedData['password']),
         ]);
-        // return response()->json([
-        //     'message' => 'User created successfully'
-        // ]);
+
+        return response()->json(['user' => $user], Response::HTTP_CREATED);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Auth  $auth
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Auth $auth)
+    public function login(Request $request)
     {
-        //
+        $credentials = $request->only('email', 'password');
+        $user = User::where('email', $credentials['email'])->first();
+
+        if (!$user || !Hash::check($credentials['password'], $user->password)) {
+            return response()->json(['error' => 'Invalid credentials'], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $token = $user->createToken('auth_token');
+
+        return response([
+            'message' => 'Login successful',
+            'user' => $user,
+            'token' => $token->plainTextToken
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Auth  $auth
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Auth $auth)
+
+
+
+    public function logout()
     {
-        //
+        $cookie = Cookie::forget('jwt');
+
+        return response([
+            'message' => 'Logged out successfully'
+        ])->withCookie($cookie);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Auth  $auth
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Auth $auth)
+    public function user(Request $request)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Auth  $auth
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Auth $auth)
-    {
-        //
+        return $request->user();
     }
 }
