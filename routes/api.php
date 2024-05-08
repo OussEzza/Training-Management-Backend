@@ -20,8 +20,3 @@ use App\Http\Controllers\AgentTrainingController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-
-Route::resource('trainings', TrainingController::class);
-Route::resource('agents', AgentController::class);
-Route::resource('agent-training ', AgentTrainingController::class);
-
