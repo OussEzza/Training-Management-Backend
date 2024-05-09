@@ -8,4 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class AgentTraining extends Model
 {
     use HasFactory;
+    protected $fillable = ['agent_id', 'training_id', 'date'];
 }

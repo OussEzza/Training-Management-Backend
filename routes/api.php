@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TrainingController;
 use App\Http\Controllers\AgentController;
+use App\Http\Controllers\AgentTrainingController;
 
 
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
@@ -23,6 +24,7 @@ Route::post('register', [AuthController::class, 'register']);
 
 Route::resource('trainings', TrainingController::class);
 Route::resource('agents', AgentController::class);
+Route::resource('agent-training', AgentTrainingController::class);
 // Example resourceful route
 // Route::resource('users', AuthController::class);
 

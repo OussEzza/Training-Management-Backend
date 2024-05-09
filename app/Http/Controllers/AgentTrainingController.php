@@ -12,10 +12,21 @@ class AgentTrainingController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $trainingId = $request->query('training_id');
+
+        if ($trainingId) {
+            $agentTraining = AgentTraining::where('training_id', $trainingId)->get();
+        } else {
+            $agentTraining = AgentTraining::all();
+        }
+
+        return response()->json([
+            'agent_training' => $agentTraining,
+        ]);
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -35,7 +46,19 @@ class AgentTrainingController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'agent_id' => 'required|exists:agents,id',
+            'training_id' => 'required|exists:trainings,id',
+            'date' => 'required|date',
+        ]);
+
+        AgentTraining::create([
+            'agent_id' => $request->agent_id,
+            'training_id' => $request->training_id,
+            'date' => $request->date,
+        ]);
+
+        return response()->json(['message' => 'Agent assigned to training successfully'], 201);
     }
 
     /**
@@ -47,6 +70,9 @@ class AgentTrainingController extends Controller
     public function show(AgentTraining $agentTraining)
     {
         //
+        return response()->json([
+            'agent-training' => $agentTraining
+        ]);
     }
 
     /**
