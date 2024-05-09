@@ -15,9 +15,12 @@ class AgentTrainingController extends Controller
     public function index(Request $request)
     {
         $trainingId = $request->query('training_id');
+        $agentId = $request->query('agent_id');
 
         if ($trainingId) {
             $agentTraining = AgentTraining::where('training_id', $trainingId)->get();
+        } elseif ($agentId) {
+            $agentTraining = AgentTraining::where('agent_id', $agentId)->get();
         } else {
             $agentTraining = AgentTraining::all();
         }
