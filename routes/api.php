@@ -2,8 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\TrainingController;
+use App\Http\Controllers\AgentController;
+
+
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
@@ -13,8 +21,11 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::post('login', [AuthController::class, 'login'])->name('login');
 Route::post('register', [AuthController::class, 'register']);
 
+Route::resource('trainings', TrainingController::class);
+Route::resource('agents', AgentController::class);
 // Example resourceful route
 // Route::resource('users', AuthController::class);
+
 
 // Individual routes if resourceful routes are not needed
 Route::get('users', [AuthController::class, 'index']);
