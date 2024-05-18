@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('agents', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('email')->unique();
             $table->string('service');
             $table->string('function');
             $table->timestamps();

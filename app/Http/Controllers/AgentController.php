@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Agent;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class AgentController extends Controller
 {
@@ -20,22 +21,30 @@ class AgentController extends Controller
     {
         $request->validate([
             'name' => 'required',
+            'email' => ['required', 'email', Rule::unique('agents')],
             'service' => 'required',
             'function' => 'required',
-            // 'department' => 'required',
         ]);
+
+        $existingAgent = Agent::where('email', $request->email)->first();
+        if ($existingAgent) {
+            return response()->json([
+                'error' => 'Email already exists in the database'
+            ], 400);
+        }
 
         Agent::create([
             'name' => $request->name,
+            'email' => $request->email,
             'service' => $request->service,
             'function' => $request->function,
-            // 'department' => $request->department,
         ]);
 
         return response()->json([
             'message' => 'Agent created successfully'
         ]);
     }
+
 
 
     public function show(Agent $agent)
@@ -51,18 +60,18 @@ class AgentController extends Controller
     {
         $request->validate([
             'name' => 'required',
+            'email' => ['required', 'email', Rule::unique('agents')->ignore($id)],
             'service' => 'required',
             'function' => 'required',
-            // 'department' => 'required',
         ]);
 
         $agent = Agent::findOrFail($id);
 
         $agent->update([
             'name' => $request->name,
+            'email' => $request->email,
             'service' => $request->service,
             'function' => $request->function,
-            // 'department' => $request->department,
         ]);
 
         return response()->json([
