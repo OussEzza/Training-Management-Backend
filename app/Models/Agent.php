@@ -9,5 +9,9 @@ class Agent extends Model
 {
     use HasFactory;
     protected $fillable = ['name', 'email', 'service', 'function'];
+    public function trainings()
+    {
+        return $this->hasMany(AgentTraining::class);
+    }
 
 }

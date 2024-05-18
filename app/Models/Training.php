@@ -10,4 +10,8 @@ class Training extends Model
     use HasFactory;
     //fillable models are created with the same name as models in the database table
     protected $fillable = ['name', 'duration', 'category'];
+    public function agents()
+    {
+        return $this->hasMany(AgentTraining::class);
+    }
 }

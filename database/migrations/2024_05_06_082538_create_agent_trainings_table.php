@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreateAgentTrainingsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -18,9 +18,11 @@ return new class extends Migration
             $table->unsignedBigInteger('agent_id');
             $table->unsignedBigInteger('training_id');
             $table->date('date');
+            $table->boolean('expired')->default(false);
+            $table->timestamps();
+
             $table->foreign('agent_id')->references('id')->on('agents')->onDelete('cascade');
             $table->foreign('training_id')->references('id')->on('trainings')->onDelete('cascade');
-            $table->timestamps();
         });
     }
 
@@ -33,4 +35,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('agent_trainings');
     }
-};
+}

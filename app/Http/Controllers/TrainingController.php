@@ -10,7 +10,8 @@ class TrainingController extends Controller
 {
     public function index()
     {
-        $trainings = Training::select('id', 'name', 'duration', 'category')->get();
+        // $trainings = Training::select('id', 'name', 'duration', 'category')->get();
+        $trainings = Training::all();
 
         return response()->json([
             'trainings' => $trainings,
