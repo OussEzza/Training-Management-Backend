@@ -17,7 +17,8 @@ class CreateAgentTrainingsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('agent_id');
             $table->unsignedBigInteger('training_id');
-            $table->date('date');
+            $table->date('date_from');
+            $table->date('date_to');
             $table->boolean('expired')->default(false);
             $table->timestamps();
 

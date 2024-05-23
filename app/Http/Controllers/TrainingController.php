@@ -10,7 +10,6 @@ class TrainingController extends Controller
 {
     public function index()
     {
-        // $trainings = Training::select('id', 'name', 'duration', 'category')->get();
         $trainings = Training::all();
 
         return response()->json([
@@ -20,7 +19,20 @@ class TrainingController extends Controller
 
     public function store(Request $request)
     {
-        Training::create($request->post());
+        // $validatedData = $request->validate([
+        //     'name' => 'required',
+        //     'duration' => 'required',
+        //     'duration_unit' => 'required',
+        //     'category' => 'required',
+        // ]);
+
+        Training::create([
+            'name' => $request['name'],
+            'duration' => $request['duration'],
+            'duration_unit' => $request['duration_unit'],
+            'category' => $request['category'],
+        ]);
+
         return response()->json([
             'message' => 'Training created successfully'
         ]);
@@ -39,6 +51,7 @@ class TrainingController extends Controller
             $validatedData = $request->validate([
                 'name' => 'required',
                 'duration' => 'required',
+                'duration_unit' => 'required',
                 'category' => 'required',
             ]);
 
@@ -50,9 +63,10 @@ class TrainingController extends Controller
                 ], 404);
             }
 
-            $training->name = $request->input('name');
-            $training->duration = $request->input('duration');
-            $training->category = $request->input('category');
+            $training->name = $validatedData['name'];
+            $training->duration = $validatedData['duration'];
+            $training->duration_unit = $validatedData['duration_unit'];
+            $training->category = $validatedData['category'];
             $training->save();
 
             return response()->json([

@@ -53,6 +53,7 @@ class CheckExpiredTrainings extends Command
                 // Update the agent-training record to mark it as expired
                 // Here, you can either use a specific property or directly update the record
                 $agentTraining->update(['expired' => true]);
+                $this->info('Expired trainings checked and email notifications sent successfully.');
             }
         }
 

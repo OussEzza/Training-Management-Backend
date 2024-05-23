@@ -12,7 +12,7 @@ class AgentTraining extends Model
     // Add this if you have a custom table name
     // protected $table = 'agent_training';
 
-    protected $fillable = ['agent_id', 'training_id', 'date', 'expired'];
+    protected $fillable = ['agent_id', 'training_id', 'date_from', 'date_to', 'expired'];
 
     public function agent()
     {

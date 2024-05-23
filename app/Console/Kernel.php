@@ -19,11 +19,14 @@ class Kernel extends ConsoleKernel
     // }
     protected $commands = [
         Commands\CheckExpiredTrainings::class,
+        \App\Console\Commands\UpdateExpiredStatus::class,
     ];
+    
+    
 
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('check:expired-trainings')->dailyAt('00:00:00');
+        $schedule->command('check:expired-trainings')->dailyAt('9:10:00');
     }
 
 

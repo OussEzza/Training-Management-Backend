@@ -25,6 +25,8 @@ Route::post('register', [AuthController::class, 'register']);
 Route::resource('trainings', TrainingController::class);
 Route::resource('agents', AgentController::class);
 Route::resource('agent-training', AgentTrainingController::class);
+Route::post('/update-expired-status', [AgentTrainingController::class, 'updateExpiredStatus']);
+Route::post('/check-email', [AuthController::class, 'checkEmail']);
 // Example resourceful route
 // Route::resource('users', AuthController::class);
 
