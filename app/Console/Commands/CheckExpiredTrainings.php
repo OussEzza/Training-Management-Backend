@@ -32,28 +32,42 @@ class CheckExpiredTrainings extends Command
      */
     public function handle()
     {
+        // Get today's date
+        $today = Carbon::now();
+
         // Get all agent-training records
         $agentTrainings = AgentTraining::with('agent', 'training')->get();
 
         // Loop through each agent-training record
         foreach ($agentTrainings as $agentTraining) {
-            // Calculate the expiry date based on the training's duration
-            $trainingDate = $agentTraining->date;
-            $trainingDuration = $agentTraining->training->duration;
-            $expiryDate = Carbon::parse($trainingDate)->addYears($trainingDuration);
+            // Use the date_to field to calculate the expiry date based on training's duration
+            $training = $agentTraining->training;
+            $dateTo = Carbon::parse($agentTraining->date_to);
 
-            // Check if the expiry date is before the current date
-            if (Carbon::now()->greaterThan($expiryDate)) {
+            // Calculate the duration in days based on the training's duration and unit
+            $durationInDays = 0;
+            if ($training->duration_unit === 'year') {
+                $durationInDays = $training->duration * 365; // Assuming 1 year = 365 days
+            } elseif ($training->duration_unit === 'month') {
+                $durationInDays = $training->duration * 30; // Approximate months to days
+            } elseif ($training->duration_unit === 'day') {
+                $durationInDays = $training->duration;
+            }
+
+            // Calculate the expiry date
+            $expiryDate = $dateTo->addDays($durationInDays);
+
+            // Check if the current date is greater than the expiry date
+            if ($today->greaterThan($expiryDate)) {
                 // The training has expired, send email notification to the agent
                 $agent = $agentTraining->agent;
-                $training = $agentTraining->training;
 
                 Mail::to($agent->email)->send(new TrainingExpiredMail($agent, $training));
 
                 // Update the agent-training record to mark it as expired
-                // Here, you can either use a specific property or directly update the record
                 $agentTraining->update(['expired' => true]);
-                $this->info('Expired trainings checked and email notifications sent successfully.');
+
+                $this->info("Notification sent to {$agent->email} for expired training {$training->name} scheduled for {$agentTraining->date_from} to {$agentTraining->date_to}");
             }
         }
 

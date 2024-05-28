@@ -16,23 +16,31 @@ class AgentTrainingController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
-    {
-        $trainingId = $request->query('training_id');
-        $agentId = $request->query('agent_id');
+    
 
-        if ($trainingId) {
-            $agentTraining = AgentTraining::where('training_id', $trainingId)->get();
-        } elseif ($agentId) {
-            $agentTraining = AgentTraining::where('agent_id', $agentId)->get();
-        } else {
-            $agentTraining = AgentTraining::all();
-        }
+public function index(Request $request)
+{
+    $trainingId = $request->query('training_id');
+    $agentId = $request->query('agent_id');
+    $perPage = $request->query('perPage', 10);
 
-        return response()->json([
-            'agent_training' => $agentTraining,
-        ]);
+    $query = AgentTraining::query();
+
+    if ($trainingId) {
+        $query->where('training_id', $trainingId);
+    } elseif ($agentId) {
+        $query->where('agent_id', $agentId);
     }
+
+    $agentTraining = $query->paginate($perPage);
+
+    return response()->json([
+        'agent_training' => $agentTraining->items(),
+        'total_pages' => $agentTraining->lastPage(),
+        'current_page' => $agentTraining->currentPage(),
+    ]);
+}
+
 
 
     /**

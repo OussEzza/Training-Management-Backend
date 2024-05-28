@@ -26,7 +26,7 @@ class Kernel extends ConsoleKernel
 
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('check:expired-trainings')->dailyAt('9:10:00');
+        $schedule->command('check:expired-trainings')->dailyAt('14:10:00');
     }
 
 
